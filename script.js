@@ -39,15 +39,16 @@ btns.addEventListener('click', (e) => {
   if (OPER.includes(btn) && n1 != null) {
     console.log('operator');
     op = btn;
-  } else op = null;
+  } 
 
   if (NUMS.includes(Number(btn)) && op != null) {
-    console.log('can i see this'); 
-    n2 = btn;
+    console.log('n2'); 
+    if (n2 == null) n2 = btn;
+    else n2 += btn;
   }
 
   if (EQUA == btn) { 
-    total = operate(n1, n2, op);
+    operate(n1, n2, op);
     label.textContent = total;
   }
   console.log(n1, op, n2,  total);
