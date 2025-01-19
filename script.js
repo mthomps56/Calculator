@@ -27,9 +27,20 @@ let label = document.querySelector('label');
 let btns = document.querySelector('.button_container');
 
 btns.addEventListener('click', (e) => {
+  label.textContent = '';
   const btn = e.target.textContent;
   label.textContent += btn;
+  if (op == EQUA && NUMS.includes(Number(btn))) {
+    console.log('first if');
+    op = null;
+    n1 = null;
+  }
 
+  if (op == EQUA && OPER.includes(btn)) {
+    console.log('second if');
+    if (n2 != null) { console.log('second if nested'); operate(n1, n2, op);} 
+    else op = btn;
+  }
   if (op == null && NUMS.includes(Number(btn))) { 
     if (n1 == null) n1 = btn;
     else n1 += btn;
@@ -50,6 +61,11 @@ btns.addEventListener('click', (e) => {
   if (EQUA == btn) { 
     operate(n1, n2, op);
     label.textContent = total;
+    n1 = total;
+    n2 = null;
+    op = btn;
   }
+
+ 
   console.log(n1, op, n2,  total);
 });
