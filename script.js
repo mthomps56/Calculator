@@ -1,8 +1,9 @@
-function a(n1, n2) { return n1 + n2; }                    // a for add.
-function s(n1, n2) { return n1 - n2; }                    // s for subtract.
-function d(n1, n2) { return n1 / n2; }                    // d for divide.
-function m(n1, n2) { return n1 * n2; }                    // m for multiply.
-function c() { n1 = null; n2 = null; total = null; }      // clears data.
+function add(n1, n2) { return n1 + n2; }                 
+function sub(n1, n2) { return n1 - n2; }                  
+function div(n1, n2) { return n1 / n2; }                   
+function mult(n1, n2) { return n1 * n2; }                    
+
+function c() { n1 = null; n2 = null; op = null; total = null; }      
 
 let n1 = null;                         // first number.
 let n2 = null;                         // second number.
@@ -12,60 +13,95 @@ let total = null;                      // running total.
 function operate(n1, n2, op) {
   n1 = Number(n1);
   n2 = Number(n2);
-  total = op == '+' ? a(n1, n2) : 
-          op == '-' ? s(n1, n2) :
-          op == '/' ? d(n1, n2) :
-          op == '*' ? m(n1, n2) : 
+  total = op == '+' ? add(n1, n2) : 
+          op == '-' ? sub(n1, n2) :
+          op == '/' ? div(n1, n2) :
+          op == '*' ? mult(n1, n2) : 
           c();
 }
 
-const NUMS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-const OPER = ['+', '-', '*', '/', '%'];
-const EQUA = '=';
+//const NUMS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+//const OPER = ['+', '-', '*', '/', '%'];
+const EQUAL = '=';
 
 let label = document.querySelector('label');
 let btns = document.querySelector('.button_container');
 
 btns.addEventListener('click', (e) => {
-  label.textContent = '';
   const btn = e.target.textContent;
+  const btnType = e.target.className;
   label.textContent += btn;
-  if (op == EQUA && NUMS.includes(Number(btn))) {
-    console.log('first if');
-    op = null;
-    n1 = null;
+  console.log(btnType);
+
+  switch(btnType) {
+    case 'number':
+      console.log('case 1');
+      if ( n1 == null ) {
+        console.log('case 1 "if"');
+        n1 = btn;      // Change n1 from null to first digit.
+        break;
+      }
+      else if ( op == EQUAL ) {
+        console.log('case 1 "else if" 1');
+        n1 = btn;
+        op = null;
+        label.textContent = n1;
+        break;
+      }
+      else if ( op == null ) {
+        console.log('case 1 "else if" 2');
+        n1 += btn;     // Add digits to n1 until an operator is assigned.
+        break;
+      }
+    case 'number': 
+      console.log('case 2');
+      if ( op != null ) { 
+        console.log('case 2 "if"');
+        n2 = btn;       // n1 is finished and the operation has been chosen. Fill n2.
+        break;
+      }
+      if ( n2 != null ) {
+        console.log('case 2 "if" 2');
+        n2 += btn;      // Add digits to n2 until equals or another operator is selected.
+        break;
+      }
+    case 'operator':
+      console.log('case 3');
+      if ( n1 != null && n2 != null) {  // When number is stored in n2 pressing an operator button first
+        console.log('case 3 "if"');
+        operate(n1, n2, op);            // calls operate before reassigning op variable to the new operator. 
+        label.textContent = total;
+        n1 = total;
+        n2 = null;
+        op = btn;
+        break;
+      }
+      else if ( n1 != null ) {
+        console.log('case 3 "else if"');
+        op = btn;   // Choose the operation only after the 1st number is assigned.
+        break;
+      }
+      else { 
+        console.log('case 3 "else"');
+        op = null;
+        break;
+      }
+    case 'equals':
+      console.log('case 4');
+      operate(n1, n2, op);
+      label.textContent = total;
+      n1 = total;
+      n2 = null;
+      op = EQUAL;
+      break;
+
+    case 'clear':
+      console.log('case 5');
+      c();
+      label.textContent = '';
+      break;
   }
 
-  if (op == EQUA && OPER.includes(btn)) {
-    console.log('second if');
-    if (n2 != null) { console.log('second if nested'); operate(n1, n2, op);} 
-    else op = btn;
-  }
-  if (op == null && NUMS.includes(Number(btn))) { 
-    if (n1 == null) n1 = btn;
-    else n1 += btn;
-    console.log('n1');
-  }
+  console.log(n1, op, n2);        
 
-  if (OPER.includes(btn) && n1 != null) {
-    console.log('operator');
-    op = btn;
-  } 
-
-  if (NUMS.includes(Number(btn)) && op != null) {
-    console.log('n2'); 
-    if (n2 == null) n2 = btn;
-    else n2 += btn;
-  }
-
-  if (EQUA == btn) { 
-    operate(n1, n2, op);
-    label.textContent = total;
-    n1 = total;
-    n2 = null;
-    op = btn;
-  }
-
- 
-  console.log(n1, op, n2,  total);
 });
